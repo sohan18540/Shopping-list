@@ -1,0 +1,60 @@
+import pandas as pd
+shopping_list = pd.DataFrame(columns=["product", "unite", "RS"])
+
+while True:
+    print("🛍️ MENU")
+    print("1️⃣  Add Item")
+    print("2️⃣  Update Item")
+    print("3️⃣  View List")
+    print("4️⃣  End")
+
+    choice = input(" Enter your choice: ")
+
+    if choice == "1":
+        name = input(" Enter product name: ")
+        qty = input(" Enter unite: ")
+        price = input(" Enter RS unit: ")
+
+        if qty.isdigit() and price.replace(".", "", 1).isdigit():
+            qty = int(qty)
+            price = float(price)
+            mask = shopping_list["product"].str.lower() == name.lower()
+            if mask.any():
+                shopping_list.loc[mask, ["unite", "RS"]] = [qty, price]
+                print(" product updated.")
+            else:
+                shopping_list.loc[len(shopping_list)] = [name, qty, price]
+                print(" product added.")
+        else:
+            print(" RONG product or RS.")
+
+    elif choice == "2":
+        name = input("️ Enter product name to update: ")
+        mask = shopping_list["product"].str.lower() == name.lower()
+        if mask.any():
+            qty = input(" New unite: ")
+            price = input(" New RS for one product: ")
+            if qty.isdigit() and price.replace(".", "", 1).isdigit():
+                shopping_list.loc[mask, ["product", "RS"]] = [int(qty), float(price)]
+                print(" product updated.")
+            else:
+                print(" Invalid input.")
+        else:
+            print(" product not found.")
+
+
+    elif choice == "3":
+        if shopping_list.empty:
+            print(" Shopping list is empty.")
+        else:
+            print(" Shopping List")
+            print(shopping_list.to_string(index=False))
+            total = (shopping_list["product"] * shopping_list["RS"]).sum()
+            print(f" Total cost: Rs. {total:.2f}")
+
+    elif choice == "4":
+        print(" Goodbye! Happy shopping!")
+        break
+
+    else:
+        print("❌ Invalid choice.")
